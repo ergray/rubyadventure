@@ -13,6 +13,7 @@ def game
 
   playerInventory = []
   playerLocation = ""
+  worldObjects = ["sword", "shield"]
   roomObjects = []
   validExits = []
   thisRoom = []
@@ -28,15 +29,16 @@ def game
   """
 
   while true
+
     decision = prompt
 
     if decision == "start" && gameStarted == false
       gameStarted = true
-      playerLocation = 0
       thisRoom = show_room(0)
-      roomObjects = thisRoom[0]
+      roomObjects = populate_room_items(worldObjects, thisRoom[0])
       puts thisRoom[2]
       validExits = thisRoom[1]
+      show_room_items(roomObjects)
     elsif decision == "start" && gameStarted == true
       puts "Looks like you've already started the game!"
     elsif decision == "quit"
@@ -48,14 +50,16 @@ def game
       movement = validExits[move(direction)]
       if movement != nil
          thisRoom = show_room(movement)
+         roomObjects = populate_room_items(worldObjects, thisRoom[0])
          puts thisRoom[2]
          validExits = thisRoom[1]
-         roomObjects = thisRoom[0]
+         show_room_items(roomObjects)
       else
         puts "Sorry, but that's not somewhere you can go."
       end
     elsif decision == 'look'
       puts thisRoom[2]
+      show_room_items(roomObjects)
     elsif decision == 'inventory'
       puts playerInventory
     elsif decision.include? 'get'
@@ -63,6 +67,7 @@ def game
       if roomObjects.include? targetObject
         playerInventory.push(targetObject)
         roomObjects.slice!(roomObjects.index(targetObject))
+        worldObjects.slice!(worldObjects.index(targetObject))
         puts playerInventory
       else
         puts "That does not appear to be something you can grab..."
@@ -76,6 +81,20 @@ end
 def move(direction)
   compass = ['north', 'east', 'south', 'west', 'up', 'down']
   return compass.index(direction)
+end
+
+def populate_room_items(world_inventory, room_list)
+  room_items = []
+  room_list.each {|item|
+    if world_inventory.index(item) != nil
+      room_items.push(item)
+    end
+  }
+  return room_items
+end
+
+def show_room_items(array)
+  array.each{|item| puts "You see a #{item} here."}
 end
 
 def help
