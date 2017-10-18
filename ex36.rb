@@ -13,8 +13,10 @@ def game
 
   playerInventory = []
   playerLocation = ""
-  validExits = ['one']
+  roomObjects = []
+  validExits = []
   thisRoom = []
+  gameStarted = false
 
   puts """
   Welcome to my Ruby text adventure!
@@ -28,12 +30,15 @@ def game
   while true
     decision = prompt
 
-    if decision == "start"
+    if decision == "start" && gameStarted == false
+      gameStarted = true
       playerLocation = 0
       thisRoom = show_room(0)
-      # start
+      roomObjects = thisRoom[0]
       puts thisRoom[2]
       validExits = thisRoom[1]
+    elsif decision == "start" && gameStarted == true
+      puts "Looks like you've already started the game!"
     elsif decision == "quit"
       exit(0)
     elsif decision == 'help'
@@ -45,8 +50,22 @@ def game
          thisRoom = show_room(movement)
          puts thisRoom[2]
          validExits = thisRoom[1]
+         roomObjects = thisRoom[0]
       else
         puts "Sorry, but that's not somewhere you can go."
+      end
+    elsif decision == 'look'
+      puts thisRoom[2]
+    elsif decision == 'inventory'
+      puts playerInventory
+    elsif decision.include? 'get'
+      targetObject = parse_input(decision)
+      if roomObjects.include? targetObject
+        playerInventory.push(targetObject)
+        roomObjects.slice!(roomObjects.index(targetObject))
+        puts playerInventory
+      else
+        puts "That does not appear to be something you can grab..."
       end
     else
       puts "Please enter start to begin the game or quit to exit."
@@ -63,11 +82,12 @@ def help
   puts """
   Here are a list of commands for the game:
 
-  start: Begin the game
-  quit:  Exit the game
-  move:  Move in a valid direction
-  get:   Retrieve item from room
-  look:  Look at the room
+  start:     Begin the game
+  quit:      Exit the game
+  move:      Move in a valid direction
+  get:       Retrieve item from room
+  look:      Look at the room
+  inventory: Display your current items
   """
 end
 
