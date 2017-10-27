@@ -101,12 +101,13 @@ def help
   puts """
   Here are a list of commands for the game:
 
-  start:     Begin the game
-  quit:      Exit the game
-  move:      Move in a valid direction
-  get:       Retrieve item from room
-  look:      Look at the room
-  inventory: Display your current items
+  start:      Begin the game
+  quit:       Exit the game
+  move:       Move in a valid direction
+  get:        Retrieve item from room
+  look:       Look at the room
+  inventory:  Display your current items
+  use [item]: Use item in your inventory
   """
 end
 
